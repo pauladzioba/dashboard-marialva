@@ -9,10 +9,6 @@ from streamlit_folium import st_folium
 import os
 import sys
 
-# Adiciona o diretório execution ao path para importar o módulo de processamento
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(BASE_DIR, "execution"))
-
 from processar_dados import carregar_ligacoes, carregar_leitura, carregar_os, cruzar_dados, detectar_duplicatas_os, processar_tudo
 
 @st.cache_data
