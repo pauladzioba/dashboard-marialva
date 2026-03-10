@@ -28,9 +28,6 @@ with st.sidebar:
     upload_leit = st.file_uploader("2️⃣ Planilha de Transmissão (Leitura atual.xlsx)", type=["xlsx"])
     upload_os = st.file_uploader("3️⃣ Planilha de Serviços (Lista de OS.xlsx)", type=["xlsx"])
     
-    st.markdown("---")
-    st.header("⚙️ Painel de Filtros")
-
 # Verifica se os arquivos foram subidos, se não, usa os locais (para ambiente de dev)
 if upload_lig and upload_leit and upload_os:
     df_result, df_dup, df_leit, df_lig_dups, df_os = carregar_dados_iniciais(upload_lig, upload_leit, upload_os)
@@ -39,10 +36,21 @@ else:
     try:
         df_result, df_dup, df_leit, df_lig_dups, df_os = carregar_dados_iniciais(None, None, None)
     except FileNotFoundError:
-        st.warning("⚠️ Aguardando upload das 3 planilhas na barra lateral para iniciar o processamento.")
+        st.warning("⚠️ Aguardando upload das 3 planilhas na barra lateral para iniciar o processamento e os filtros.")
         st.stop()
 
+
+# --- VARIÁVEIS DE FILTRO INICIAIS ---
+busca_mat = ""
+grupos_selec = []
+rotas_selecionadas = []
+tipos_selec = []
+status_os_selec = []
+apenas_telemetria = False
+
+with st.sidebar:
     st.markdown("---")
+    st.header("⚙️ Painel de Filtros")
     
     # Busca Direta
     st.subheader("Buscador")
