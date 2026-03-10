@@ -141,10 +141,30 @@ pendentes = len(df_filtrado[df_filtrado["Classificação"] == "Pendente de OS"])
 andamento = len(df_filtrado[df_filtrado["Classificação"] == "OS em Andamento"])
 
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("📊 Total de Ligações", total_filtrado)
-col2.metric("✅ Trocas Concluídas", f"{concluidas}", f"{concluidas/total_filtrado*100:.1f}%" if total_filtrado > 0 else "0%")
-col3.metric("⏳ OS em Andamento", andamento)
-col4.metric("🚨 Pendentes de OS", pendentes)
+
+with col1:
+    st.metric("📊 Total de Ligações", total_filtrado)
+    
+    # Tabela rica com a quebra por Grupo - Nome mostrando Status
+    if not df_filtrado.empty:
+        df_grupos = df_filtrado.groupby(["Grupo - Nome", "Classificação"]).size().unstack(fill_value=0).reset_index()
+        # Adiciona coluna Total e ordena
+        colunas_soma = [c for c in df_grupos.columns if c != "Grupo - Nome"]
+        df_grupos["Total"] = df_grupos[colunas_soma].sum(axis=1)
+        df_grupos = df_grupos.sort_values("Total", ascending=False)
+        st.dataframe(df_grupos, hide_index=True, use_container_width=True)
+    else:
+        st.info("Sem dados")
+
+with col2:
+    st.metric("✅ Trocas Concluídas", f"{concluidas}", f"{concluidas/total_filtrado*100:.1f}%" if total_filtrado > 0 else "0%")
+
+with col3:
+    st.metric("⏳ OS em Andamento", andamento)
+
+with col4:
+    st.metric("🚨 Pendentes de OS", pendentes)
+
 st.markdown("<br>", unsafe_allow_html=True)
 
 
